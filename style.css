@@ -3654,3 +3654,38 @@ p > video {
     background-color: #fcf8e3;
     border-color: #faebcc;
 }
+.sub-menu-heading
+{
+	background: #081d63;
+    color: #fff;
+    padding: 10px 25px;	
+}
+.class-sub-menu-inner
+{
+	float:left;
+	border:8px solid #ccc;
+}
+.widthHeightChange
+{
+	float:left;
+	width:100%;
+	display:none;
+}
+.widthHeightChange label
+{
+	float:left;
+	margin-top: 5px;
+}
+.widthHeightChange input
+{
+	float:left;
+	width: 50px;
+    margin: 0px 5px;
+    padding: 5px;
+}
+ol.flex-control-thumbs li
+{
+	list-style:none;
+	float:left;
+	margin:5px;
+}

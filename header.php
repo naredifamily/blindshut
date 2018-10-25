@@ -108,53 +108,55 @@ $(".cross_button").click(function(){
  <i></i>
  </a>
  
-  <?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu afclr', 'menu_id' => 'header_menu' ) ); ?>
- 
-<?php /*?><ul class="nav-menu" id="header_menu">
+  <?php //wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu afclr', 'menu_id' => 'header_menu' ) ); ?>
+ <?php $product_cat = get_terms( array(
+    'taxonomy' => 'product_cat',
+    'hide_empty' => false,
+	'parent' => 0,
+	'exclude'=>56
+) ); 
+?>
+<ul class="nav-menu" id="header_menu">
 <li><a href="#">Home</a></li>
-<li class="menu-item-has-children"><a href="#">Blinds / Shades / Shutters <i class="fa fa-angle-down"></i></a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
+<?php foreach($product_cat as $cat) {
+	$product_catInnerSecond = get_terms( array(
+    'taxonomy' => 'product_cat',
+    'hide_empty' => false,
+	'parent' => $cat->term_id
+) );
+	 ?> 
+<li class="menu-item-has-children"><a href="<?php echo get_term_link($cat->term_id); ?>"><?php echo $cat->name; ?><?php if(!empty($product_catInnerSecond)){ ?><i class="fa fa-angle-down"></i><?php } ?></a>
+<?php if(count($product_catInnerSecond) > 0){
+	$count=count($product_catInnerSecond);
+	$width=$count*180;
+	$innerWidth=100/$count;
+	?>
+<div class="sub-menu" style="width:<?php echo $width; ?>%">
+<?php foreach($product_catInnerSecond as $InnerSecond)
+{ 
+$product_catInnerThird = get_terms( array(
+    'taxonomy' => 'product_cat',
+    'hide_empty' => false,
+	'parent' => $InnerSecond->term_id
+) );
+?>
+<div class="class-sub-menu-inner" style="width:<?php echo $innerWidth ?>%">
+<h2 class="sub-menu-heading"><?php echo $InnerSecond->name; ?></h2>
+<?php if(count($product_catInnerThird) > 0){?>
+<ul>
+<?php foreach($product_catInnerThird as $InnerThird) {?>
+<li><a href="<?php echo get_term_link($InnerThird->term_id); ?>"><?php echo $InnerThird->name; ?></a></li>
+<?php } ?>
 </ul>
+
+<?php } ?>
+</div>
+<?php } ?>
+</div>
+<?php }?>
 </li>
-<li class="menu-item-has-children"><a href="#">eciality Blinds <i class="fa fa-angle-down"></i>  </a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
+<?php } ?>
 </ul>
-</li>
-<li class="menu-item-has-children"><a href="#">SHop by room <i class="fa fa-angle-down"></i></a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
-</ul>
-</li>
-<li class="menu-item-has-children"><a href="#">Shop by need <i class="fa fa-angle-down"></i> </a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
-</ul>
-</li>
-<li class="menu-item-has-children"><a href="#">how to <i class="fa fa-angle-down"></i></a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
-</ul>
-</li>
-<li class="menu-item-has-children"><a href="#">sale <i class="fa fa-angle-down"></i></a>
-<ul class="sub-menu">
-<li><a href="#">Blinds</a></li>
-<li><a href="#">Shades</a></li>
-<li><a href="#">Shutters</a></li>
-</ul>
-</li>
-</ul><?php */?>
 </div>
 </div>
 </div>

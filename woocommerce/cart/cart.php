@@ -13,7 +13,7 @@
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @author  WooThemes
  * @package WooCommerce/Templates
- * @version 3.3.0
+ * @version 3.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -64,6 +64,13 @@ do_action( 'woocommerce_before_cart' ); ?>
 				$routeless=$cart_item['routeless'];
 				$valanceOption=$cart_item['valanceOption'];
 				$nickname=$cart_item['nickname'];
+				
+				$shade=(isset($cart_item['shade']))?$cart_item['shade']:'';
+				$rightWidth=(isset($cart_item['rightWidth']))?$cart_item['rightWidth']:'';
+				$rightHeight=(isset($cart_item['rightHeight']))?$cart_item['rightHeight']:'';
+				$centerWidth=(isset($cart_item['centerWidth']))?$cart_item['centerWidth']:'';
+				$centerHeight=(isset($cart_item['centerHeight']))?$cart_item['centerHeight']:'';
+				
 				$room=get_term( $roomType, 'room_type' );
 				$colorObject=get_term($color,'fabric_styles');
 				$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
@@ -119,8 +126,19 @@ do_action( 'woocommerce_before_cart' ); ?>
                         <label>LIFT OPTION : </label><span><?php $mountOject=get_term($liftOption,'lift_option'); echo $mountOject->name;?> </span><br />
                         <label>TILT OPTION : </label><span><?php $mountOject=get_term($tiltOption,'tilt_option'); echo $mountOject->name;?> </span><br />
                         <label>DECORATIVE ACCENT : </label><span><?php $mountOject=get_term($decorative,'decorative_accent'); echo $mountOject->name;?> </span><br />
-                         <label>ROUTELESS OPTION : </label><span><?php $mountOject=get_term($routeless,'routeless'); echo $mountOject->name;?> </span><br />
-                          <label>VALANCE OPTION : </label><span><?php $mountOject=get_term($valanceOption,'valance_option'); echo $mountOject->name;?> </span>
+                        <label>ROUTELESS OPTION : </label><span><?php $mountOject=get_term($routeless,'routeless'); echo $mountOject->name;?> </span><br />
+                        <label>VALANCE OPTION : </label><span><?php $mountOject=get_term($valanceOption,'valance_option'); echo $mountOject->name;?> </span>
+                        <?php if($rightWidth!=0 && $rightWidth!='')
+						{?>
+                        <label>Right Blind Width : </label><span><?php echo $rightWidth; ?></span>	
+                        <label>Right Blind Height : </label><span><?php echo $rightHeight; ?></span>								
+						<?php }
+						if($centerWidth!=0 && $centerWidth!='')
+						{?>
+						<label>Center Blind Width : </label><span><?php echo $centerWidth; ?></span>	
+                        <label>Center Blind Height : </label><span><?php echo $centerHeight; ?></span>
+						<?php }
+						?>
                         </td>
 
 						<td class="product-price" data-title="<?php esc_attr_e( 'Price', 'woocommerce' ); ?>">

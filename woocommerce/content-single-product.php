@@ -13,7 +13,7 @@
  * @see 	    https://docs.woocommerce.com/document/template-structure/
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     3.0.0
+ * @version     3.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -71,7 +71,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 						jQuery('.messageSize').css("display","none");
 						calculatePriceSize();
 					}
-					
 				}
 			});
 		});
@@ -116,12 +115,40 @@ $productFields=get_fields($productCat->get_id());
 <div class="wrapper">
 <div class="product_detail_inner afclr">
 <div class="pro_detail_box">
-<div class="pro_detail_slider afclr">
-<div class="pro_detail_img">
+<div class="pro_detail_slider afclr"><?php
+global $product;
+
+$columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
+$post_thumbnail_id = $product->get_image_id();
+$wrapper_classes   = apply_filters( 'woocommerce_single_product_image_gallery_classes', array(
+	'woocommerce-product-gallery',
+	'woocommerce-product-gallery--' . ( has_post_thumbnail() ? 'with-images' : 'without-images' ),
+	'woocommerce-product-gallery--columns-' . absint( $columns ),
+	'images',
+) );
+?>
+<div class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $wrapper_classes ) ) ); ?>" data-columns="<?php echo esc_attr( $columns ); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
+	<figure class="woocommerce-product-gallery__wrapper">
+		<?php
+		if ( has_post_thumbnail() ) {
+			$html  = wc_get_gallery_image_html( $post_thumbnail_id, true );
+		} else {
+			$html  = '<div class="woocommerce-product-gallery__image--placeholder">';
+			$html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src() ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+			$html .= '</div>';
+		}
+
+		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id );
+
+		do_action( 'woocommerce_product_thumbnails' );
+		?>
+	</figure>
+</div>
+
+<?php /*<div class="pro_detail_img">
 <img src="<?php echo get_template_directory_uri()?>/images/product-5.jpg" alt="">
 </div>
 <div class="pro_detail_sub_img afclr">
-
 <ul>
 <li><img src="<?php echo get_template_directory_uri()?>/images/top_icon.png" alt=""></li>
 <li><img src="<?php echo get_template_directory_uri()?>/images/product-slide.jpg" alt=""></li>
@@ -134,6 +161,7 @@ $productFields=get_fields($productCat->get_id());
 <li><img src="<?php echo get_template_directory_uri()?>/images/bottom_icon.png" alt=""></li>
 </ul>
 </div>
+<?php */ ?>
 </div>
 </div>
 <?php 
@@ -157,7 +185,6 @@ $productFields=get_fields($productCat->get_id());
 	  {
 		  $profitMargin=$priceGroupMargin;
 	  }
-	  
 	  $priceProduct=money_format("%i",$prices[0]->price);
 	  $costPrice=(($priceProduct*$costMargin));
 	  $costPlusProfitProductPrice=$costPrice+(($costPrice*$profitMargin)/100);
@@ -182,17 +209,17 @@ $widths=$wpdb->get_row("SELECT max(width) as maxwidth FROM `".$wpdb->prefix."gro
  ?>
 
 <div class="pro_detail_desc afclr">
-<ul>
-<li class="detail_desc afclr"><i class="fa fa-angle-double-right"></i><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus dapibus ut eros vitae malesuada. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> </li>
-<li class="detail_desc afclr"><i class="fa fa-angle-double-right"></i><p>Nullam vel pulvinar justo, et posuere tortor. Mauris at sollicitudin ante. Donec finibus, dui et placerat placerat, odio tellus euismod nisi.</p></li>
-<li class="detail_desc afclr"><i class="fa fa-angle-double-right"></i><p>Nullam vel pulvinar justo, et posuere tortor. Mauris at sollicitudin ante. Donec finibus, dui et placerat placerat, odio tellus euismod nisi.</p></li>
-</ul>
+<?php $description = apply_filters( 'woocommerce_description', $product->description ); ?>
+<div class="woocommerce-product-details__short-description">
+	<?php echo $description; // WPCS: XSS ok. ?>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+<input type="hidden" id="productPriceCore" name="productPriceCore" value="" />
 <div class="clear"></div>
 <!-- product-detail Start -->
 <div class="product_tab afclr">
@@ -285,71 +312,7 @@ foreach($roomTypes as $room)
 <h5><?php echo $room->name; ?></h5>
 </div>
 </div>
-<?php $checkRoom=1; } /*?>
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/bath.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/bath_hover.png"  alt=""  class="hover_image">
-<h5>Bathroom</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/room_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/room_hover.png"  alt=""  class="hover_image">
-<h5>Living Room</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/dining_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/dining_hover.png"  alt=""  class="hover_image">
-<h5>Dining Room</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/sofa_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/sofa_hover.png"  alt=""  class="hover_image">
-<h5>Family Room</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/kids_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/kids_hover.png"  alt=""  class="hover_image">
-<h5>Kids Room</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/kitchen_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/kitchen_hover.png"  alt=""  class="hover_image">
-<h5>Kitchen</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/foyer_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/foyer_hover.png"  alt=""  class="hover_image">
-<h5>Foyer</h5>
-</div>
-</div>
-
-<div class="pro_icon">
-<div class="pro_tab_icon">
-<img src="<?php echo get_template_directory_uri() ?>/images/other_icon.png" alt=""  class="nrml_img">
-<img src="<?php echo get_template_directory_uri() ?>/images/other_hover.png"  alt=""  class="hover_image">
-<h5>Other</h5>
-</div>
-</div>
-*/?>
+<?php $checkRoom=1; } ?>
 <script type="text/javascript">
 jQuery(document).ready(function(e) {
     jQuery(".roomtypenrml").click(function(e) {
@@ -379,7 +342,15 @@ $fabric_styles=wp_get_post_terms($productCat->get_id(),'fabric_styles',$args2);
 <div class="main_color">
 <?php $image_color=get_field('color_image',$productCat->get_id(),true); ?>
 <?php $default_color=get_field('default_color',$productCat->get_id(),true); ?>
+<?php if(isset($image_color['url']))
+{?>
 <img src="<?php echo $image_color['url']; ?>" alt="<?php ?>">
+<?php }
+else 
+{?>
+	<div class="imageNotSet" style='background:url(<?php echo $image_color['url']; ?>);background-repeat:repeat;height:400px;'></div>
+<?php }
+ ?>
 <h5>Get Free Sample</h5>
 <h6><?php echo $default_color->name; ?></h6>
 </div>
@@ -435,7 +406,15 @@ jQuery(document).ready(function(e) {
 	jQuery("#colorStyle").change(function(e) {
         jQuery(".pro_box_"+jQuery(this).val()).click();
     });
-	jQuery(".main_color img").css({"background-image":"url("+jQuery(".color_pro_box.active").children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px"});
+	if(jQuery(".main_color div.imageNotSet").length > 0)
+	{
+		
+		jQuery(".main_color div.imageNotSet").css({"background":"url("+jQuery(".color_pro_box.active").children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px","background-repeat":"repeat"});
+	}
+	else
+	{
+		jQuery(".main_color img").css({"background-image":"url("+jQuery(".color_pro_box.active").children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px"});
+	}
 	//alert(jQuery(".color_pro_box.active").children(".color_name").children(".fabric_images").children("img").attr("fabric-url"));
 	
     jQuery(".fabric_images").click(function(e) {
@@ -444,7 +423,14 @@ jQuery(document).ready(function(e) {
 	jQuery(".color_pro_box").click(function(e) {
 		e.preventDefault();
 		jQuery(".color_pro_box.active").removeClass("active");
-		jQuery(".main_color img").css({"background-image":"url("+jQuery(this).children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px"});
+		if(jQuery(".main_color div.imageNotSet").length > 0)
+	{
+		jQuery(".main_color div.imageNotSet").css({"background":"url("+jQuery(this).children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px","background-repeat":"repeat"});
+	}
+	else
+	{
+		jQuery(".main_color img").css({"background":"url("+jQuery(this).children(".color_name").children(".fabric_images").children("img").attr("fabric-url")+")","background-size":"50px"});
+	}
 		jQuery(this).addClass("active");
 		var term_id=jQuery('.color_pro_box.active').attr("term-id");
 		getMaxWidthMaxHeight(term_id);
@@ -535,9 +521,11 @@ foreach($mountOption as $option)
 </div>
 <div class="select_learn"><a href="#">Learn More</a></div>
 </div>
+<?php $selectASize=get_field('select_a_size',$productCat->get_id(),true);?>
+<?php if(count($selectASize) > 0)
+{?>
 <div class="select_size">
 <h4>Select a Size</h4>
-<?php $selectASize=get_field('select_a_size',$productCat->get_id(),true); ?>
 <div class="select_size_outer afclr">
 <?php 
 $imageUrl='';
@@ -563,7 +551,6 @@ if(strcmp(trim($imageUrl),'')==0)
 	{
 		if($ichecknew==0)
 		{
-			
 			$SelectSizeImage=get_field('image','size_'.$size['size']->term_id,true); 
 			$imageUrl=$SelectSizeImage['url'];
 			$Selectshades=get_field('shades','size_'.$size['size']->term_id,true);
@@ -776,6 +763,7 @@ if(strcmp(trim($imageUrl),'')==0)
 	
 </div>
 </div>
+<?php } ?>
 <?php $liftoptions=get_field('lift_option',$productCat->get_id(),true);
 if(count($liftoptions) > 0)
 {
@@ -800,13 +788,12 @@ foreach($liftoptions as $option)
     	<img src="<?php echo $imageurlDefaultLift; ?>" id="headrail" name="headrail" />
     </div>
 	<div class="selectheadrail">
-    
     <?php  foreach($liftoptions as $option)
 	{ 
 		$imageurl=get_field('image','lift_option_'.$option['option']->term_id,true);
 		$optionsLiftSelect=get_field('options','lift_option_'.$option['option']->term_id,true);
 	?>
-<div class="lift_input_size"><input type="radio" value="<?php echo $option['option']->term_id; ?>" name="liftOption" class="liftOptionClass liftingSystem" term-id="<?php echo $option['option']->term_id; ?>" image-url="<?php echo $imageurl['url']; ?>" id="liftoption_<?php echo $option['option']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="liftoption_<?php echo $option['option']->term_id; ?>"><?php echo $option['option']->name; 
+<div class="lift_input_size"><input type="radio" sale-added="<?php echo $option['sale_price_added']; ?>" price-added="<?php echo $option['price_added']; ?>" value="<?php echo $option['option']->term_id; ?>" name="liftOption" class="liftOptionClass liftingSystem" term-id="<?php echo $option['option']->term_id; ?>" image-url="<?php echo $imageurl['url']; ?>" id="liftoption_<?php echo $option['option']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="liftoption_<?php echo $option['option']->term_id; ?>"><?php echo $option['option']->name; 
 if($option['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$option['price_added'].'</span> '.get_woocommerce_currency_symbol().$option['sale_price_added'].')'; }  ?> </label>
 <?php 
 $iOption=0;
@@ -904,7 +891,7 @@ if(strcmp(trim($imageurlDefaultLift),'')==0)
 		$optionsLiftSelect=get_field('select','tilt_option_'.$option['option']->term_id,true);
 		
 	?>
-<div class="tilt_radio"><input type="radio" <?php if($term_idDefault==$option['option']->term_id) { echo "checked='checked'";}?> name="tiltOption" class="tiltOptionClass" term-id="<?php echo $option['option']->term_id; ?>" value="<?php echo $option['option']->name;?>" image-url="<?php echo $imageurl['url']; ?>" id="liftoption_<?php echo $option['option']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="liftoption_<?php echo $option['option']->term_id; ?>"><?php echo $option['option']->name; 
+<div class="tilt_radio"><input type="radio"  sale-added="<?php echo $option['sale_price_added']; ?>" price-added="<?php echo $option['price_added']; ?>" <?php if($term_idDefault==$option['option']->term_id) { echo "checked='checked'";}?> name="tiltOption" class="tiltOptionClass" term-id="<?php echo $option['option']->term_id; ?>" value="<?php echo $option['option']->name;?>" image-url="<?php echo $imageurl['url']; ?>" id="liftoption_<?php echo $option['option']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="liftoption_<?php echo $option['option']->term_id; ?>"><?php echo $option['option']->name; 
 if($option['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$option['price_added'].'</span> '.get_woocommerce_currency_symbol().$option['sale_price_added'].')'; }  ?> </label>
 <?php 
 $iOption=0;
@@ -973,7 +960,7 @@ foreach($tiltoptions as $option)
 		$imageurl=get_field('image','decorative_accent_'.$option['decorative_accent']->term_id,true);
 		$optionscolorsSelect=get_field('colors','decorative_accent_'.$option['decorative_accent']->term_id,true);
 	?>
-<div class="decorativeAccent_select"><input type="radio" name="decorative_Option" term-id="<?php echo $option['decorative_accent']->term_id; ?>" class="decorative_OptionClass" image-url="<?php echo $imageurl['url']; ?>" id="decorative_Option<?php echo $option['decorative_accent']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="decorative_Option<?php echo $option['decorative_accent']->term_id; ?>"><?php echo $option['decorative_accent']->name; 
+<div class="decorativeAccent_select"><input type="radio"  sale-added="<?php echo $option['sale_price']; ?>" price-added="<?php echo $option['price_added']; ?>" name="decorative_Option" term-id="<?php echo $option['decorative_accent']->term_id; ?>" class="decorative_OptionClass" image-url="<?php echo $imageurl['url']; ?>" id="decorative_Option<?php echo $option['decorative_accent']->term_id; ?>" <?php if(strcmp($option['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="decorative_Option<?php echo $option['decorative_accent']->term_id; ?>"><?php echo $option['decorative_accent']->name; 
 if($option['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$option['price_added'].'</span> '.get_woocommerce_currency_symbol().$option['sale_price'].')'; }  ?> </label>
 <?php if(count($optionscolorsSelect) > 0)
 {?>
@@ -1014,8 +1001,6 @@ if($option['price_added']==0){ echo " (included in price)"; }else { echo '(add <
 $imageurlDefaultRouteLess='';
 foreach($route_lesss as $route_less)
 {
-	
-	
 	if(strcmp($route_less['default'],'yes')==0)
 	{
 		$imageurl1=get_field('image','routeless_'.$route_less['title']->term_id,true);
@@ -1034,20 +1019,12 @@ foreach($route_lesss as $route_less)
 	{
 		$imageurl1=get_field('image','routeless_'.$route_less['title']->term_id,true);
 		?>
-    <div class="routeless_select"><input type="radio" name="routeLess" class="routeLessClass" value="<?php echo $route_less['title']->name;?>" image-url="<?php echo $imageurl1['url']; ?>" term-id="<?php echo $route_less['title']->term_id; ?>" id="routeLess_<?php echo $route_less['title']->term_id; ?>" <?php if(strcmp($route_less['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="routeLess_<?php echo $route_less['title']->term_id; ?>"><?php echo $route_less['title']->name; 
+    <div class="routeless_select"><input type="radio"  sale-added="<?php echo $route_less['sale_price']; ?>" price-added="<?php echo $route_less['price_added']; ?>" name="routeLess" class="routeLessClass" value="<?php echo $route_less['title']->name;?>" image-url="<?php echo $imageurl1['url']; ?>" term-id="<?php echo $route_less['title']->term_id; ?>" id="routeLess_<?php echo $route_less['title']->term_id; ?>" <?php if(strcmp($route_less['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="routeLess_<?php echo $route_less['title']->term_id; ?>"><?php echo $route_less['title']->name; 
 if($route_less['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$route_less['price_added'].'</span> '.get_woocommerce_currency_symbol().$route_less['sale_price'].')'; }  ?> </label></div>
     <?php } ?>
     
 </div>
 </div>
-
-<?php /*
-
-<div class="route_radio afclr">
-<div class="route_input"><input type="radio"><label>No Routeless Upgrades (included in price)</label></div>
-<div class="route_input"><input type="radio"><label>Routeless Slats (add <span>C$10.35</span> C$6.93)</label></div>
-</div>
-*/ ?>
 
 <div class="clr"></div>
 </div>
@@ -1059,6 +1036,7 @@ if($route_less['price_added']==0){ echo " (included in price)"; }else { echo '(a
 <h4>Select a valance option</h4>
 <?php
 $imageurlDefaultvalance='';
+$checkDefault=0;
 foreach($route_lesss as $route_less)
 {
 	if(strcmp($route_less['default'],'yes')==0)
@@ -1068,7 +1046,12 @@ foreach($route_lesss as $route_less)
 		break;
 	}
 }
-
+if(strcmp($imageurl1,'')==0 || strcmp($imageurlDefaultvalance,'')==0)
+{
+	$imageurl1=get_field('image','valance_option_'.$route_lesss[0]['option']->term_id,true);
+	$imageurlDefaultvalance=$imageurl1['url'];
+	$checkDefault=1;
+}
  ?>
  <div class="selectsizeouter">
     <div class="imagevalance">
@@ -1076,13 +1059,15 @@ foreach($route_lesss as $route_less)
     </div>
 	<div class="selectheadrail">
     
-    <?php foreach($route_lesss as $route_less)
+    <?php 
+	$itnew=0;
+	foreach($route_lesss as $route_less)
 	{
 		$imageurl1=get_field('image','valance_option_'.$route_less['option']->term_id,true);
 		?>
-    <div class="valance_radio"><input type="radio" name="valance" class="valanceClass" value="<?php echo $route_less['option']->name;?>" image-url="<?php echo $imageurl1['url']; ?>" term-id="<?php echo $route_less['option']->term_id; ?>" id="valance_<?php echo $route_less['option']->term_id; ?>" <?php if(strcmp($route_less['default'],'yes')==0) { echo "checked='checked'"; } ?>><label for="valance_<?php echo $route_less['option']->term_id; ?>"><?php echo $route_less['option']->name; 
+    <div class="valance_radio"><input type="radio" sale-added="<?php echo $route_less['sale_price_added']; ?>" price-added="<?php echo $route_less['price_added']; ?>" name="valance" class="valanceClass" value="<?php echo $route_less['option']->name;?>" image-url="<?php echo $imageurl1['url']; ?>" term-id="<?php echo $route_less['option']->term_id; ?>" id="valance_<?php echo $route_less['option']->term_id; ?>" <?php if(strcmp($route_less['default'],'yes')==0 || ($checkDefault==1 && $itnew==0)) { echo "checked='checked'"; } ?>><label for="valance_<?php echo $route_less['option']->term_id; ?>"><?php echo $route_less['option']->name; 
 if($route_less['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$route_less['price_added'].'</span> '.get_woocommerce_currency_symbol().$route_less['sale_price_added'].')'; }  ?> </label></div>
-    <?php } ?>
+    <?php $itnew++;} ?>
         
 </div>
 </div>
@@ -1090,7 +1075,7 @@ if($route_less['price_added']==0){ echo " (included in price)"; }else { echo '(a
 </div>
 <?php } ?>
 <?php 
-$fieldArray=array('lift_option','valance_option','select_a_size','tilt_option','color_image','decorative_accent','route_less');
+$fieldArray=array('lift_option','valance_option','select_a_size','tilt_option','color_image','decorative_accent','route_less'); //'route_less'
 foreach($productFields as $field=>$value) 
 {
 	if(is_array($value))
@@ -1101,18 +1086,20 @@ foreach($productFields as $field=>$value)
 			 $itt=0;
 			 $ipp=0;
 			 $defaulttermid=0;
+			
 				foreach($value as $v)
 				{
+					
 					if($itt==0)
 					{
-					$getTerm=get_term($v['option']);
+					$getTerm=get_term($v['title']->term_id);
 					$itt++;
 					}
 				if(strcmp($v['default'],'yes')==0)
 					{
-						$getTerm=get_term($v['option']);
-						$defaulttermid=$v['option'];
-						$imageurl1=get_field('image',$getTerm->taxonomy.'_'.$v['option'],true);
+						$getTerm=get_term($v['title']->term_id);
+						$defaulttermid=$v['title']->term_id;
+						$imageurl1=get_field('image',$getTerm->taxonomy.'_'.$v['title']->term_id,true);
 						$imageurlDefaultLift=$imageurl1['url'];
 						$ipp=1;
 						break;
@@ -1123,17 +1110,19 @@ foreach($productFields as $field=>$value)
 					$ittw=0;
 					foreach($value as $v)
 				{
+					
 					if($ittw==0)
 					{
 						$ittw=1;
-						$getTerm=get_term($v['option']);
-						$defaulttermid=$v['option'];
-						$imageurl1=get_field('image',$getTerm->taxonomy.'_'.$v['option'],true);
+						$getTerm=get_term($v['title']->term_id);
+						$defaulttermid=$v['title']->term_id;
+						$imageurl1=get_field('image',$getTerm->taxonomy.'_'.$v['title']->term_id,true);
 						$imageurlDefaultLift=$imageurl1['url'];
 					}
 				}
 				}
 				?>
+               
                 <div class="select_accent">
 <h4>Select a <?php echo $getTerm->name; ?></h4>
 				<div class="accent_radio afclr">
@@ -1147,11 +1136,11 @@ foreach($productFields as $field=>$value)
 			foreach($value as $v)
 			{
 				
-				$getTerm=get_term($v['option']);
-				$imageurl=get_field('image',$getTerm->taxonomy.'_'.$v['option'],true);
+				$getTerm=get_term($v['title']->term_id);
+				$imageurl=get_field('image',$getTerm->taxonomy.'_'.$v['title']->term_id,true);
 				?>
-                <div class="valance_radio"><input type="radio" name="<?php echo $getTerm->taxonomy ?>" class="CustomTax_<?php echo $getTerm->taxonomy ?>Class" value="<?php echo $getTerm->term_id;?>" image-url="<?php echo $imageurl['url']; ?>" term-id="<?php echo $getTerm->term_id; ?>" id="valance_<?php echo $getTerm->term_id; ?>" <?php if($defaulttermid==$getTerm->term_id) { echo "checked='checked'"; } ?>><label for="valance_<?php echo $getTerm->term_id; ?>"><?php echo $getTerm->name; 
-if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$v['price_added_percentage'].'</span> '.get_woocommerce_currency_symbol().$v['sale_price_added_Percentage'].')'; }  ?> </label></div>
+                <div class="valance_radio"><input sale-added="<?php echo $v['sale_price']; ?>" price-added="<?php echo $v['price_added']; ?>" type="radio" name="<?php echo $getTerm->taxonomy ?>" class="CustomTax_<?php echo $getTerm->taxonomy ?>Class customtaxClasses" value="<?php echo $getTerm->term_id;?>" image-url="<?php echo $imageurl['url']; ?>" term-id="<?php echo $getTerm->term_id; ?>" id="valance_<?php echo $getTerm->term_id; ?>" <?php if($defaulttermid==$getTerm->term_id) { echo "checked='checked'"; } ?>><label for="valance_<?php echo $getTerm->term_id; ?>"><?php echo $getTerm->name; 
+if($v['price_added']==0){ echo " (included in price)"; }else { echo '(add <span class="ng-binding">'.get_woocommerce_currency_symbol().$v['price_added'].'</span> '.get_woocommerce_currency_symbol().$v['sale_price'].')'; }  ?> </label></div>
 <?php
 				
 				//$imageurl=get_field('image','decorative_accent_'.$option['decorative_accent']->term_id,true);
@@ -1162,9 +1151,9 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
 					jQuery(document).ready(function(e) {
                         jQuery(".CustomTax_<?php echo $getTerm->taxonomy ?>Class").click(function(e) {
                             
-        var ImageUrl=jQuery(this).attr("image-url");
-		  jQuery(".CustomTax_<?php echo $getTerm->taxonomy ?> img").attr("src",ImageUrl);
-		 
+        			var ImageUrl=jQuery(this).attr("image-url");
+		  				jQuery(".CustomTax_<?php echo $getTerm->taxonomy ?> img").attr("src",ImageUrl);
+		 calculatePriceSize();
                         });
                     });
 				</script>
@@ -1187,7 +1176,7 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
 <input type="text" style="display:none" id="calPrice" name="calPrice" value="<?php echo number_format($costPlusProfitProductPrice,2); ?>" />
 <input type="text" id="nickname" name="nickname" value="">
 </div>
-<div class="summary">
+<div class="summary"> 
 <h4>summary</h4>
 <div class="summary_inner afclr">
 <div class="summary_sub">
@@ -1207,7 +1196,7 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
 	jQuery(document).scroll(function(e) {
         	var windowPosition=parseFloat(jQuery(this).scrollTop());
         	var selectRoomPosition=parseFloat(jQuery('.select_room').offset().top);
-        	var selectSummary=parseFloat(jQuery(".optional_info h5").offset().top)-50;
+        	var selectSummary=parseFloat(jQuery(".optional_info h5").offset().top)-60;
         	if(windowPosition >= selectSummary)
         	{
         		jQuery(".pro_inner_box_right").removeClass("fixed").addClass("bottom");
@@ -1226,6 +1215,37 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
     	});
 	jQuery(".orderBlinds").click(function(e) {
 		e.preventDefault();
+		var centerWidth=0;
+		var centerHeight=0;
+		var rightWidth=0;
+		var rightHeight=0;
+		var shade=jQuery(".size_checked_select:checked").attr("shade-size");
+		if(shade==2)
+		{
+			rightWidth=parseInt(jQuery('.widthproductRightBlind').val());
+			rightHeight=parseInt(jQuery('.heightproductRightBlind').val());
+			if(parseFloat(jQuery('.widthproductinnerRightBlind').val()) > 0)
+			{
+				rightWidth++;
+			}
+			if(parseFloat(jQuery('.heightproductinnerRightBlind').val()) > 0)
+			{
+				rightHeight++;
+			}
+		}
+		else if(shade==3)
+		{
+			centerWidth=parseInt(jQuery('.widthproductCenterBlind').val());
+			centerHeight=parseInt(jQuery('.heightproductCenterBlind').val());
+			if(parseFloat(jQuery('.widthproductinnerCenterBlind').val()) > 0)
+			{
+				centerWidth++;
+			}
+			if(parseFloat(jQuery('.heightproductinnerCenterBlind').val()) > 0)
+			{
+				centerHeight++;
+			}
+		}
         jQuery.ajax({
 			url:"<?php echo admin_url( 'admin-ajax.php' ); ?>",
 			type:"POST",
@@ -1236,6 +1256,11 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
 				   'color':jQuery(".color_pro_box.active").attr("term-id"),
 				   'mount':jQuery(".mountOptionRadio:checked").attr("term-id"),
 				   'size':jQuery(".size_checked_select:checked").attr("term-id"),
+				   'shade':shade,
+				   'rightWidth':rightWidth,
+				   'rightHeight':rightHeight,
+				   'centerWidth':centerWidth,
+				   'centerHeight':centerHeight,
 				   'width':jQuery("#widthproduct").val(),
 				   'height':jQuery("#heightproduct").val(),
 				   'widthInner':jQuery("#widthproductinner").val(),
@@ -1261,14 +1286,15 @@ if($v['price_added_percentage']==0){ echo " (included in price)"; }else { echo '
 <div class="option_right afclr">
 <h3>Options Summary</h3>
 <ul>
-<li>Room : <span id="roomTypeSummary"><?php echo $roomDefault ?></span>  </li>
-<li>Window Name : <span id="windowNameSummary"><?php echo $roomDefault ?></span> </li>
-<li>Width : <span id="windowWidthSummary"><?php echo $widthProduct; ?></span>  <span id="windowWidthInnerSummary">0/0</span></li>
-<li>Length: <span id="windowLengthSummary"><?php echo $heightProduct; ?></span> <span id="windowHeightInnerSummary">0/0</span></li>
-<li>Mount : <span id="windowMountSummary"><?php echo $mountOptionDefaultName; ?></span></li>
-<li>Color Option : <span id="windowColorSummary"><?php echo $colorDefault; ?></span></li>
-<li>Tilting Option : <span id="windowTiltingSummary"><?php echo $tiltoptionsDefault; ?></span></li>
-
+<li><strong>Room :</strong> <span id="roomTypeSummary"><?php echo $roomDefault ?></span>  </li>
+<li><strong>Window Name :</strong> <span id="windowNameSummary"><?php echo $roomDefault ?></span> </li>
+<li><strong>Headrail :</strong> <span id="headrailSummary">Single headrail</span></li>
+<li><strong>Width :</strong> <span id="windowWidthSummary"><?php echo $widthProduct; ?></span>  <span id="windowWidthInnerSummary">0/0</span></li>
+<li><strong>Length:</strong> <span id="windowLengthSummary"><?php echo $heightProduct; ?></span> <span id="windowHeightInnerSummary">0/0</span></li>
+<li><strong>Mount :</strong> <span id="windowMountSummary"><?php echo $mountOptionDefaultName; ?></span></li>
+<li><strong>Color Option :</strong> <span id="windowColorSummary"><?php echo $colorDefault; ?></span></li>
+<li><strong>Tilting Option :</strong> <span id="windowTiltingSummary"><?php echo $tiltoptionsDefault; ?></span></li>
+<li><strong>Price :</strong> <span id="priceProductSummary">$<?php echo number_format($costPlusProfitProductPrice,2); ?></span></li>
 </ul>
 </div>
 </div>
@@ -1287,8 +1313,48 @@ function calculatePriceSize()
 {
 	jQuery(document).ready(function ()
 	{
+		var custom=0;
+		jQuery(".customtaxClasses").each(function(index, element) {
+           if(jQuery(this).is(":checked"))
+		   {
+				  var customAdded=parseInt(jQuery(this).attr("sale-added")); 
+				  if (!isNaN(customAdded))
+					{
+						custom+=customAdded;
+					}
+		   }
+        });
+		
 		var shade=parseInt(jQuery(".size_checked_select:checked").attr('shade-size'));
+		var liftAdded=parseInt(jQuery(".liftingSystem:checked").attr("sale-added"));
+		var tiltAdded=parseInt(jQuery(".tiltOptionClass:checked").attr("sale-added"));
 		var priceAdded=parseInt(jQuery(".size_checked_select:checked").attr('sale-added'));
+		var decorativeAdded=parseInt(jQuery(".decorative_OptionClass:checked").attr('sale-added'));
+		var routeLessClass=parseInt(jQuery(".routeLessClass:checked").attr('sale-added'));
+		var valanceClass=parseInt(jQuery(".valanceClass:checked").attr('sale-added'));
+		if (isNaN(liftAdded))
+		{
+			liftAdded=0;
+		}
+		if (isNaN(routeLessClass))
+		{
+			routeLessClass=0;
+		}
+		if (isNaN(tiltAdded))
+		{
+			tiltAdded=0;
+		}
+		if (isNaN(valanceClass))
+		{
+			valanceClass=0;
+		}
+		if (isNaN(decorativeAdded))
+		{
+			decorativeAdded=0;
+		}
+		
+		if (!isNaN(priceAdded))
+		{
 		var widthp=parseInt(jQuery("#widthproductSingleBlind").val());
 		var heightp=parseInt(jQuery("#heightproductSingleBlind").val());
 		if(jQuery("#widthproductinnerSingleBlind").val() > 0)
@@ -1342,18 +1408,20 @@ function calculatePriceSize()
 			data:"action=getHeightWidthBlindShade&width="+widthp+"&height="+heightp+"&pricegroup=<?php echo $priceGroup ?>&productId=<?php echo $productCat->get_id(); ?>",
 			success: function(data)
 			{
-				jQuery("#retailPrice").html(data.price+priceAdded);
+				jQuery("#retailPrice").html(data.price+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass);
 				jQuery("#offPercentage").html(data.discountpercentage);
-				jQuery(".priceProduct").html("$"+data.actualPrice+priceAdded);
-				jQuery("#productPrice").html("$"+data.actualPrice+priceAdded);
-				jQuery("#calPrice").val(data.actualPrice+priceAdded);
-				jQuery("#productPriceTotal").html("$"+parseFloat(data.actualPrice+priceAdded)*parseInt(document.getElementById("quantity").value));
+				jQuery(".priceProduct").html("$"+parseFloat(data.actualPrice+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass+custom)*1);
+				jQuery("#productPrice").html("$"+parseFloat(data.actualPrice+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass+custom)*1);
+				jQuery("#calPrice").val(parseFloat(data.actualPrice+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass+custom)*1);
+				jQuery("#productPriceTotal").html("$"+parseFloat(data.actualPrice+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass+custom)*parseInt(document.getElementById("quantity").value));
+				jQuery("#priceProductSummary").html("$"+parseFloat(data.actualPrice+priceAdded+liftAdded+tiltAdded+decorativeAdded+routeLessClass+valanceClass+custom)*1);
 			},
 			error: function(error)
 			{
 
 			}
 		});
+		}
 	});
 }
 jQuery(document).ready(function () {
@@ -1363,10 +1431,12 @@ jQuery(document).ready(function () {
 	jQuery(".valanceClass").click(function(e) {
         var ImageUrl=jQuery(this).attr("image-url");
 		  jQuery(".imagevalance img").attr("src",ImageUrl);
+		  calculatePriceSize();
 		  
     });
 	jQuery(".routeLessClass").click(function(e) {
         jQuery(".imageROUTELESS img").attr("src",jQuery(this).attr("image-url"));
+		calculatePriceSize();
     });
 	jQuery(".decorativeAccent_select select").change(function(e) {
         jQuery(".aceent_type_"+jQuery(this).val()).click();
@@ -1378,7 +1448,7 @@ jQuery(document).ready(function () {
 		var term_id=jQuery(this).attr("color-title");
 		
 		$('.decorativeAccent_select select option[value='+term_id+']').prop('selected',true);
-		
+		calculatePriceSize();
 		
     });
 	jQuery(".decorative_OptionClass").click(function(e) {
@@ -1388,8 +1458,10 @@ jQuery(document).ready(function () {
 		   jQuery(".decorative_OptionClass").parent(".decorativeAccent_select").children("div.accent_color").css("display","none");
 		  jQuery(this).parent(".decorativeAccent_select").children("select").css("display","block");
 		   jQuery(this).parent(".decorativeAccent_select").children("div.accent_color").css("display","block");
+		   calculatePriceSize();
     });
 	jQuery(".liftOptionClass").click(function(e) {
+		
         var ImageUrl=jQuery(this).attr("image-url");
 		jQuery(".imageliftoption img").attr("src",ImageUrl);
 		jQuery(".liftOptionClass").parent(".lift_input_size").children("select").css("display","none");
@@ -1432,6 +1504,7 @@ jQuery(document).ready(function () {
 			jQuery(".messageTilt").html('');
 			jQuery(".messageLift").css('display','none');
 		}
+		calculatePriceSize();
     });
 	jQuery(".tiltOptionClass").click(function(e) {
         var ImageUrl=jQuery(this).attr("image-url");
@@ -1457,6 +1530,7 @@ jQuery(document).ready(function () {
 		}
 		jQuery(this).parent(".tilt_radio").children("select.selectTiltOptionLeft").css("display","block");
 		jQuery("#windowTiltingSummary").html(jQuery(this).val());
+		calculatePriceSize();
     });
 
 	jQuery(".size_checked_select").click(function(e) {
@@ -1496,9 +1570,11 @@ jQuery(document).ready(function () {
 			});
 			}
 			check=0;
+			jQuery(".pro_detail_size").css("display","block");
 			jQuery(".SingleBlind").css("display","block");
 			jQuery(".CenterBlind").css("display","none");
 			jQuery(".RightBlind").css("display","none");
+			jQuery("#headrailSummary").html('Single headrail');
 		}
 		else if(shade==2)
 		{
@@ -1524,10 +1600,11 @@ jQuery(document).ready(function () {
     				check=1;
     			}
 			});
-			jQuery(".pro_detail_size").css("display","none");
+			jQuery(".pro_detail_size").css("display","block");
 			jQuery(".SingleBlind").css("display","block");
 			jQuery(".CenterBlind").css("display","none");
 			jQuery(".RightBlind").css("display","block");
+			jQuery("#headrailSummary").html('2 shades on 1 headrail');
 		}
 		else if(shade==3)
 		{
@@ -1553,13 +1630,14 @@ jQuery(document).ready(function () {
     				check=1;
     			}
 			});
-			jQuery(".pro_detail_size").css("display","none");
+			jQuery(".pro_detail_size").css("display","block");
 			jQuery(".SingleBlind").css("display","block");
 			jQuery(".CenterBlind").css("display","block");
 			jQuery(".RightBlind").css("display","block");
-
+			jQuery("#headrailSummary").html('3 shades on 1 headrail');
 		}
-		
+		var term_id=jQuery('.color_pro_box.active').attr("term-id");
+		getMaxWidthMaxHeight(term_id);
     });
 jQuery('#horizontalTab').easyResponsiveTabs({
 type: 'default', //Types: default, vertical, accordion           
@@ -1945,6 +2023,7 @@ jQuery(document).ready(function(e) {
 			},
 			error: function(error)
 			{
+				
 			}
 		});
 		
@@ -2220,7 +2299,6 @@ function functionQuantityChange()
            if(parseInt(document.getElementById("quantity").value) > 0)
 			{
 				var replaceString=jQuery("#productPrice").html();
-				
 				replaceString=replaceString.replace('$','');
         		jQuery("#productPriceTotal").html("$"+parseFloat(replaceString)*parseInt(document.getElementById("quantity").value));
 			}  
